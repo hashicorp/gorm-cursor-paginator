@@ -124,16 +124,14 @@ func (p *Paginator) setup(db *gorm.DB, dest interface{}) {
 		if p.rules[i].SQLRepr == "" {
 			// if key has levels then recalculate table name regardless prev value
 			// because it can be different for different keys in an aggregated model
-			if sqlTable == "" || multiKey {
-				if multiKey {
-					subkeys := strings.Split(p.rules[i].Key, ".")
-					parentPath := strings.Join(subkeys[0:len(subkeys)-1], ".")
-					if parent, ok := util.ReflectFieldByPath(dest, parentPath); ok {
-						sqlTable = db.NewScope(reflect.New(parent.Type).Interface()).TableName()
-					}
-				} else {
-					sqlTable = db.NewScope(dest).TableName()
+			if multiKey {
+				subkeys := strings.Split(p.rules[i].Key, ".")
+				parentPath := strings.Join(subkeys[0:len(subkeys)-1], ".")
+				if parent, ok := util.ReflectFieldByPath(dest, parentPath); ok {
+					sqlTable = db.NewScope(reflect.New(parent.Type).Interface()).TableName()
 				}
+			} else if sqlTable == "" {
+				sqlTable = db.NewScope(dest).TableName()
 			}
 			sqlKey := p.parseSQLKey(dest, p.rules[i].Key)
 			p.rules[i].SQLRepr = fmt.Sprintf("%s.%s", sqlTable, sqlKey)
