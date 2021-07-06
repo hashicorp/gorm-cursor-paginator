@@ -28,10 +28,9 @@ func (e *Encoder) Encode(model interface{}) (string, error) {
 }
 
 func (e *Encoder) marshalJSON(model interface{}) ([]byte, error) {
-	rv := util.ReflectValue(model)
 	fields := make([]interface{}, len(e.keys))
 	for i, key := range e.keys {
-		f := rv.FieldByName(key)
+		f := util.ReflectValueByPath(model, key)
 		if f == (reflect.Value{}) {
 			return nil, ErrInvalidModel
 		}

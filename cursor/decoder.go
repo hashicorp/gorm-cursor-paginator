@@ -36,7 +36,7 @@ func (d *Decoder) Decode(cursor string, model interface{}) (fields []interface{}
 	}
 	for _, key := range d.keys {
 		// key is already validated at beginning
-		f, _ := util.ReflectType(model).FieldByName(key)
+		f, _ := util.ReflectFieldByPath(model, key)
 		v := reflect.New(f.Type).Interface()
 		if err := jd.Decode(v); err != nil {
 			return nil, ErrInvalidCursor
@@ -68,7 +68,7 @@ func (d *Decoder) validate(model interface{}) error {
 		return ErrInvalidModel
 	}
 	for _, key := range d.keys {
-		if _, ok := modelType.FieldByName(key); !ok {
+		if _, ok := util.ReflectFieldByPath(model, key); !ok {
 			return ErrInvalidModel
 		}
 	}

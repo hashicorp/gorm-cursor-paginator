@@ -120,8 +120,17 @@ func (p *Paginator) validate(dest interface{}) (err error) {
 func (p *Paginator) setup(db *gorm.DB, dest interface{}) {
 	var sqlTable string
 	for i := range p.rules {
+		multiKey := strings.Contains(p.rules[i].Key, ".")
 		if p.rules[i].SQLRepr == "" {
-			if sqlTable == "" {
+			// if key has levels then recalculate table name regardless prev value
+			// because it can be different for different keys in an aggregated model
+			if multiKey {
+				subkeys := strings.Split(p.rules[i].Key, ".")
+				parentPath := strings.Join(subkeys[0:len(subkeys)-1], ".")
+				if parent, ok := util.ReflectFieldByPath(dest, parentPath); ok {
+					sqlTable = db.NewScope(reflect.New(parent.Type).Interface()).TableName()
+				}
+			} else if sqlTable == "" {
 				sqlTable = db.NewScope(dest).TableName()
 			}
 			sqlKey := p.parseSQLKey(dest, p.rules[i].Key)
@@ -134,8 +143,8 @@ func (p *Paginator) setup(db *gorm.DB, dest interface{}) {
 }
 
 func (p *Paginator) parseSQLKey(dest interface{}, key string) string {
-	// dest is already validated at validataion phase
-	f, _ := util.ReflectType(dest).FieldByName(key)
+	// dest is already validated at validation phase
+	f, _ := util.ReflectFieldByPath(dest, key)
 	for _, tag := range strings.Split(string(f.Tag), " ") {
 		// e.g., gorm:"type:varchar(255);column:field_name"
 		if strings.HasPrefix(tag, "gorm:") {

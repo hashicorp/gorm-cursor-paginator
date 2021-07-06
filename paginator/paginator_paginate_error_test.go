@@ -1,7 +1,7 @@
 package paginator
 
 func (s *paginatorSuite) TestPaginateNoRule() {
-	var orders []order
+	var orders []TestOrder
 	_, _, err := New(&Config{
 		Rules: []Rule{},
 	}).Paginate(s.db, &orders)
@@ -9,7 +9,7 @@ func (s *paginatorSuite) TestPaginateNoRule() {
 }
 
 func (s *paginatorSuite) TestPaginateInvalidLimit() {
-	var orders []order
+	var orders []TestOrder
 	_, _, err := New(&Config{
 		Limit: -1,
 	}).Paginate(s.db, &orders)
@@ -17,7 +17,7 @@ func (s *paginatorSuite) TestPaginateInvalidLimit() {
 }
 
 func (s *paginatorSuite) TestPaginateInvalidOrder() {
-	var orders []order
+	var orders []TestOrder
 	_, _, err := New(&Config{
 		Order: "123",
 	}).Paginate(s.db, &orders)
@@ -25,7 +25,7 @@ func (s *paginatorSuite) TestPaginateInvalidOrder() {
 }
 
 func (s *paginatorSuite) TestPaginateInvalidOrderOnRules() {
-	var orders []order
+	var orders []TestOrder
 	_, _, err := New(&Config{
 		Rules: []Rule{
 			{
@@ -38,7 +38,7 @@ func (s *paginatorSuite) TestPaginateInvalidOrderOnRules() {
 }
 
 func (s *paginatorSuite) TestPaginateInvalidAfterCursor() {
-	var orders []order
+	var orders []TestOrder
 	_, _, err := New(
 		WithAfter("invalid cursor"),
 	).Paginate(s.db, &orders)
@@ -46,7 +46,7 @@ func (s *paginatorSuite) TestPaginateInvalidAfterCursor() {
 }
 
 func (s *paginatorSuite) TestPaginateInvalidBeforeCursor() {
-	var orders []order
+	var orders []TestOrder
 	_, _, err := New(
 		WithBefore("invalid cursor"),
 	).Paginate(s.db, &orders)

@@ -10,7 +10,7 @@ type Rule struct {
 }
 
 func (r *Rule) validate(dest interface{}) (err error) {
-	if _, ok := util.ReflectType(dest).FieldByName(r.Key); !ok {
+	if _, ok := util.ReflectFieldByPath(dest, r.Key); !ok {
 		return ErrInvalidModel
 	}
 	if r.Order != "" {
