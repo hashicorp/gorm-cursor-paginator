@@ -1,6 +1,6 @@
 module github.com/hashicorp/gorm-cursor-paginator
 
-go 1.16
+go 1.23
 
 require (
 	github.com/iancoleman/strcase v0.0.0-20180726023541-3605ed457bf7
