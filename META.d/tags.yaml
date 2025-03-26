@@ -1,0 +1,6 @@
+---
+
+tags:
+  type: library
+  # go-version should follow cloud-sdk version
+  exempt: go-version
