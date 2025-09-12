@@ -1,3 +1,6 @@
+# Copyright IBM Corp. 2018, 2025
+# SPDX-License-Identifier: MIT
+
 partition: hcp
 schema: 1.1
 summary:
